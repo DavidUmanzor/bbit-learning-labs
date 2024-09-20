@@ -1,7 +1,7 @@
 from consumer_interface import mqConsumerInterface
 import os
 import pika
-
+import sys
 
 class mqConsumer(mqConsumerInterface):
     def __init__(self, binding_key: str, exchange_name: str, queue_name: str) -> None:
@@ -15,7 +15,7 @@ class mqConsumer(mqConsumerInterface):
         self.con_params = pika.URLParameters(os.environ["AMQP_URL"])
         self.connection = pika.BlockingConnection(parameters=self.con_params)
         self.channel = self.connection.channel()
-        self.exchange = self.channel.exchange_declare(exchange=self.exchange_name)
+        self.exchange = self.channel.exchange_declare(exchange=self.exchange_name, exchange_type = "topic")
         self.channel.queue_declare(queue=self.queue_name)
         self.channel.queue_bind(
             queue= self.queue_name,
